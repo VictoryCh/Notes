@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/static/lib/bootstrap.css">
+    <link rel="stylesheet" href="/static/lib/fontawesom/css/all.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <title>Записки</title>
+</head>
+<body>
+<header class="navbar navbar-dark bg-dark">
+    <div class="navbar-brand logo">
+        <h5>Записки сумасшедшего</h5>
+    </div>
+    <form class="form-inline" action="/logout" method="post">
+        <input type="hidden" name="_csrf" value="{{_csrf.token}}">
+        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Выйти</button>
+    </form>
+</header>
+<main class="content">
+    <div class="container-fluid" >
+        <div class="row justify-content-center">
+            <div class="col-8 border rounded m-2 p-2" >
+                <div class="row">
+                    <div class="col input-group m-1">
+                        <input type="text" class="form-control" placeholder="input text or click row">
+                        <div class="input-group-append">
+                            <button class="btn btn-primary">Сохранить</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <table class="table table-sm">
+                            <tbody>
+                            <tr>
+                                <td><input type="checkbox"></td>
+                                <td>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatum temporibus corporis illo at harum aliquid hic culpa, quidem fugit minima nostrum reprehenderit totam non quae similique consequuntur quisquam saepe. Sunt!</td>
+                                <td><a href=""><i style="color: #dc3545" class="fas fa-times"></i></a></td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox" checked></td>
+                                <td><s>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolorum ducimus eveniet harum delectus. Neque placeat alias temporibus est, nam animi cupiditate illo, sapiente nisi minima laboriosam itaque qui, veniam beatae.</s></td>
+                                <td><a href=""><i style="color: #dc3545" class="fas fa-times"></i></a></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<footer class="footer fixed-bottom text-center">
+    <p>2020 &copy Виктория Черненко</p>
+</footer>
+<script src="/static/lib/jquery-3.5.1.min.js"></script>
+<script src="/static/lib/bootstrap.min.js"></script>
+</body>
+</html>
