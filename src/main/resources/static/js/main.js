@@ -1,19 +1,27 @@
 var csrf_token = $('meta[name="_csrf"]').attr('content');
-var notesApi = Vue.resource("/notes{/id}",{headers:{'X-CSRF-TOKEN': this.csrf_token}});
 
 Vue.component('table-row',{
     props: ['note'],
-    template: '<tr v-if="note.checked=true">'+
-                    '<td><input type="checkbox" checked></td>'+
+    data: function(){
+        return {
+            flag: this.note.checked
+        }
+    },
+    template: '<tr v-if="flag==true">'+
+                    '<td><input type="checkbox" v-model="flag" @click="checkNote"></td>'+
                     '<td><s>{{ note.text }}</s></td>'+
-                    '<td><a @click="editNote"><i style="color: #dc3545" class="fas fa-plus"></i></a></td>'+
-                    '<td><a @click="delNote"><i style="color: #dc3545" class="fas fa-times"></i></a></td>'+
+                    '<td class="d-flex justify-content-end">'+
+                        '<button @click="editNote" class="btn"><i style="color: #007bff" class="fas fa-pen"></i></button>'+
+                        '<button @click="delNote" class="btn"><i style="color: #dc3545" class="fas fa-times"></i></button>'+
+                    '</td>'+
                '</tr>'+
-               '<tr v-else">'+
-                    '<td><input type="checkbox"></td>'+
+               '<tr v-else>'+
+                    '<td><input type="checkbox" v-model="flag" @click="checkNote"></td>'+
                     '<td>{{ note.text }}</td>'+
-                    '<td><a @click="editNote"><i style="color: #dc3545" class="fas fa-plus"></i></a></td>'+
-                    '<td><a @click="delNote><i style="color: #dc3545" class="fas fa-times"></i></a></td>'+
+                    '<td class="d-flex justify-content-end">'+
+                        '<button @click="editNote" class="btn"><i style="color: #007bff" class="fas fa-pen"></i></button>'+
+                        '<button @click="delNote" class="btn"><i style="color: #dc3545" class="fas fa-times"></i></button>'+
+                    '</td>'+
                '</tr>',
     methods: {
         editNote: function(){
@@ -21,6 +29,12 @@ Vue.component('table-row',{
         },
         delNote: function(){
             this.$emit("delNote",this.note)
+        },
+        checkNote: function(){
+            console.log(this.flag)
+            this.note.checked = !this.flag
+            console.log(this.note)
+            this.$http.put('/notes/'+this.note.id, this.note, {headers:{'X-CSRF-TOKEN': csrf_token}});
         }
     }
 })
@@ -49,18 +63,19 @@ Vue.component('form-edit',{
                '</div>',
     methods: {
         saveNote: function(){
-            var note = {text: this.text, checked: this.checked}
+            var note = { text: this.text, checked: this.checked }
             if (this.id != null){
-                console.log(this.csrf_token);
-                this.$http.put('/notes/'+this.id, {body: JSON.stringify(note)},{headers:{'X-CSRF-TOKEN': csrf_token}}).then(response => response.json().then(data => {
-                    this.notes.indexOf(note);
+                this.$http.put('/notes/'+this.id, note, {headers:{'X-CSRF-TOKEN': csrf_token}}).then(response => response.json().then(data => {
+                    let nt = this.notes.find(el => el.id === this.id)
+                    this.notes.splice(this.notes.indexOf(nt),1,data);
                     this.text='';
                     this.id=null;
                     this.checked=false
                 }))
             } else {
-                console.log(csrf_token);
-                this.$http.post('/notes', {body: note},{headers:{'X-CSRF-TOKEN': csrf_token}}).then(response => response.json().then(data => {
+                this.$http.post('/notes', note ,{
+                        headers:{'X-CSRF-TOKEN': csrf_token}
+                } ).then(response => response.json().then(data => {
                     this.notes.push(data);
                     this.text='';
                     this.id=null;
@@ -86,14 +101,14 @@ Vue.component('main-form',{
                                   '<div class="col">'+
                                      '<table class="table table-sm">'+
                                         '<tbody>'+
-                                            '<table-row v-for="note in notesList" :key="note.id" :note="note"/>'+
+                                            '<table-row v-for="note in notesList" :key="note.id" :note="note" v-on:editNote="editNote" v-on:delNote="delNote"/>'+
                                         '</tbody>'+
                                      '</table>'+
                                   '</div>'+
                               '</div>'+
                           '</div>',
     created: function(){
-        notesApi.get().then(result => result.json().then(data => {
+        this.$http.get('/notes').then(result => result.json().then(data => {
             data.forEach(item => this.notesList.push(item));
         }))
     },
@@ -102,7 +117,11 @@ Vue.component('main-form',{
             this.note = note;
         },
         delNote: function(note){
-            this.notesList.splice(this.notesList.indexOf(note),1)
+            this.$http.delete('/notes/'+note.id,{headers:{'X-CSRF-TOKEN': csrf_token}}).then(result => {
+                if (result.ok){
+                    this.notesList.splice(this.notesList.indexOf(note),1)
+                }
+            })
         }
     }
 })

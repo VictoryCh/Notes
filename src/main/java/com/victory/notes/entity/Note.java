@@ -1,7 +1,5 @@
 package com.victory.notes.entity;
 
-import com.sun.istack.NotNull;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -13,19 +11,23 @@ public class Note {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
     private String text;
     private boolean checked;
+
+    public Note() {
+    }
 
     public Note(String text, boolean checked) {
         this.text = text;
         this.checked = checked;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -52,20 +54,22 @@ public class Note {
 
         Note note = (Note) o;
 
-        return id != null ? !id.equals(note.id) : note.id != null;
+        if (checked != note.checked) return false;
+        if (!id.equals(note.id)) return false;
+        return text.equals(note.text);
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (text != null ? text.hashCode() : 0);
+        int result = id.hashCode();
+        result = 31 * result + text.hashCode();
         result = 31 * result + (checked ? 1 : 0);
         return result;
     }
 
     @Override
     public String toString() {
-        return "Note{" +
+        return "{" +
                 "id=" + id +
                 ", text='" + text + '\'' +
                 ", checked=" + checked +

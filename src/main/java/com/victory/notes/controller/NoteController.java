@@ -6,17 +6,21 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
+import java.util.List;
 
 @RestController
 @RequestMapping("notes")
 public class NoteController {
 
     @Autowired
-    private NoteRepo noteRepo;
+    private final NoteRepo noteRepo;
+
+    public NoteController(NoteRepo noteRepo) {
+        this.noteRepo = noteRepo;
+    }
 
     @GetMapping
-    public Iterable<Note> getNotes(){
+    public List<Note> getNotes(){
         return noteRepo.findAll();
     }
 
@@ -27,16 +31,16 @@ public class NoteController {
 
     @PostMapping
     public Note addNote(@RequestBody Note note){
-        System.out.println("s");
         return noteRepo.save(note);
     }
 
     @PutMapping("{id}")
-    public Note updateNote(@PathVariable("id") Note noteFromDb, Note note){
+    public Note updateNote(@PathVariable("id") Note noteFromDb, @RequestBody Note note){
         BeanUtils.copyProperties(note,noteFromDb,"id");
-        return noteRepo.save(note);
+        return noteRepo.save(noteFromDb);
     }
 
+    @DeleteMapping("{id}")
     public void deleteNote(@PathVariable("id") Note note){
         noteRepo.delete(note);
     }
