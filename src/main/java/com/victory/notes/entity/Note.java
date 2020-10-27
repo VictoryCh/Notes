@@ -16,8 +16,7 @@ public class Note {
     private String text;
     private boolean checked;
 
-    public Note(long id, String text, boolean checked) {
-        this.id = id;
+    public Note(String text, boolean checked) {
         this.text = text;
         this.checked = checked;
     }
@@ -44,5 +43,32 @@ public class Note {
 
     public void setChecked(boolean checked) {
         this.checked = checked;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Note note = (Note) o;
+
+        return id != null ? !id.equals(note.id) : note.id != null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (text != null ? text.hashCode() : 0);
+        result = 31 * result + (checked ? 1 : 0);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Note{" +
+                "id=" + id +
+                ", text='" + text + '\'' +
+                ", checked=" + checked +
+                '}';
     }
 }
