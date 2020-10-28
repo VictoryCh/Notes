@@ -9,3 +9,7 @@ footer p{
     color: #a0abb6;
     font-size: 85%;
 }
+
+.table th, .table td {
+    vertical-align: middle;
+}

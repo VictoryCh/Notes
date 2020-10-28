@@ -6,6 +6,7 @@ import com.victory.notes.entity.User;
 import com.victory.notes.repos.NoteRepo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,9 +27,9 @@ public class NoteController {
     @GetMapping
     public List<Note> getNotes(@AuthenticationPrincipal User user){
         if (user.getRole().contains(Role.ADMIN))
-            return noteRepo.findAll();
+            return noteRepo.findAll(Sort.by(Sort.Direction.ASC,"checked","text"));
         else
-            return noteRepo.findNoteByAuthor(user);
+            return noteRepo.findNoteByAuthor(user,Sort.by(Sort.Direction.ASC,"checked","text"));
     }
 
     @GetMapping("{id}")
@@ -44,7 +45,7 @@ public class NoteController {
 
     @PutMapping("{id}")
     public Note updateNote(@PathVariable("id") Note noteFromDb, @RequestBody Note note){
-        BeanUtils.copyProperties(note,noteFromDb,"id");
+        BeanUtils.copyProperties(note,noteFromDb,"id","author");
         return noteRepo.save(noteFromDb);
     }
 

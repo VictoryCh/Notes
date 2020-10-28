@@ -1,5 +1,8 @@
 package com.victory.notes.entity;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.sun.istack.NotNull;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -24,6 +27,13 @@ public class User implements UserDetails {
     private Set<Role> role;
 
     public User() {
+    }
+
+    public User(String username, String password, boolean active, Set<Role> role) {
+        this.username = username;
+        this.password = password;
+        this.active = active;
+        this.role = role;
     }
 
     public boolean isActive() {

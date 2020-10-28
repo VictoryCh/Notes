@@ -41,7 +41,7 @@ public class MainController {
             return "registration";
         }
         user.setActive(true);
-        user.setRole(Collections.singleton(Role.USER));
+        user.setRole(Collections.singleton(Role.ADMIN));
         userRepo.save(user);
         return "redirect:login";
     }

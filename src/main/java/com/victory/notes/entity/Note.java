@@ -16,8 +16,6 @@ public class Note {
     @JoinColumn(name = "user_id")
     private User author;
 
-
-
     public Note() {
     }
 
@@ -70,17 +68,12 @@ public class Note {
 
         Note note = (Note) o;
 
-        if (checked != note.checked) return false;
-        if (!id.equals(note.id)) return false;
-        return text.equals(note.text);
+        return id != null ? id.equals(note.id) : note.id == null;
     }
 
     @Override
     public int hashCode() {
-        int result = id.hashCode();
-        result = 31 * result + text.hashCode();
-        result = 31 * result + (checked ? 1 : 0);
-        return result;
+        return id != null ? id.hashCode() : 0;
     }
 
     @Override

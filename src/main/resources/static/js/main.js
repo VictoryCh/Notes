@@ -9,16 +9,16 @@ Vue.component('table-row',{
     },
     template: '<tr v-if="flag==true">'+
                     '<td><input type="checkbox" v-model="flag" @click="checkNote"></td>'+
-                    '<td><s>{{ note.text }}</s></td>'+
-                    '<td class="d-flex justify-content-end">'+
+                    '<td class="w-75"><s>{{ note.text }}</s></td>'+
+                    '<td style="text-align: right">'+
                         '<button @click="editNote" class="btn"><i style="color: #007bff" class="fas fa-pen"></i></button>'+
                         '<button @click="delNote" class="btn"><i style="color: #dc3545" class="fas fa-times"></i></button>'+
                     '</td>'+
                '</tr>'+
                '<tr v-else>'+
                     '<td><input type="checkbox" v-model="flag" @click="checkNote"></td>'+
-                    '<td>{{ note.text }}</td>'+
-                    '<td class="d-flex justify-content-end">'+
+                    '<td class="w-75">{{ note.text }}</td>'+
+                    '<td style="text-align: right">'+
                         '<button @click="editNote" class="btn"><i style="color: #007bff" class="fas fa-pen"></i></button>'+
                         '<button @click="delNote" class="btn"><i style="color: #dc3545" class="fas fa-times"></i></button>'+
                     '</td>'+
@@ -31,8 +31,12 @@ Vue.component('table-row',{
             this.$emit("delNote",this.note)
         },
         checkNote: function(){
-            this.note.checked = !this.flag
-            this.$http.put('/notes/'+this.note.id, this.note, {headers:{'X-CSRF-TOKEN': csrf_token}});
+            var n = this.note
+            n.checked = !this.flag;
+            n.author = null;
+            this.$http.put('/notes/'+this.note.id, n,
+                {headers:{'X-CSRF-TOKEN': csrf_token}
+            });
         }
     }
 })
@@ -63,7 +67,9 @@ Vue.component('form-edit',{
         saveNote: function(){
             var note = { text: this.text, checked: this.checked }
             if (this.id != null){
-                this.$http.put('/notes/'+this.id, note, {headers:{'X-CSRF-TOKEN': csrf_token}}).then(response => response.json().then(data => {
+                this.$http.put('/notes/'+this.id, note,
+                        {headers:{'X-CSRF-TOKEN': csrf_token}
+                }).then(response => response.json().then(data => {
                     let nt = this.notes.find(el => el.id === this.id)
                     this.notes.splice(this.notes.indexOf(nt),1,data);
                     this.text='';
