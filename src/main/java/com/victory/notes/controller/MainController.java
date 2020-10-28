@@ -4,6 +4,7 @@ import com.victory.notes.entity.Role;
 import com.victory.notes.entity.User;
 import com.victory.notes.repos.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -40,7 +41,7 @@ public class MainController {
             return "registration";
         }
         user.setActive(true);
-        user.setRole(Collections.singleton(Role.ADMIN));
+        user.setRole(Collections.singleton(Role.USER));
         userRepo.save(user);
         return "redirect:login";
     }

@@ -1,9 +1,12 @@
 package com.victory.notes.controller;
 
 import com.victory.notes.entity.Note;
+import com.victory.notes.entity.Role;
+import com.victory.notes.entity.User;
 import com.victory.notes.repos.NoteRepo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,9 +22,13 @@ public class NoteController {
         this.noteRepo = noteRepo;
     }
 
+
     @GetMapping
-    public List<Note> getNotes(){
-        return noteRepo.findAll();
+    public List<Note> getNotes(@AuthenticationPrincipal User user){
+        if (user.getRole().contains(Role.ADMIN))
+            return noteRepo.findAll();
+        else
+            return noteRepo.findNoteByAuthor(user);
     }
 
     @GetMapping("{id}")
@@ -30,7 +37,8 @@ public class NoteController {
     }
 
     @PostMapping
-    public Note addNote(@RequestBody Note note){
+    public Note addNote(@RequestBody Note note, @AuthenticationPrincipal User user){
+        note.setAuthor(user);
         return noteRepo.save(note);
     }
 

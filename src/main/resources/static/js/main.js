@@ -31,9 +31,7 @@ Vue.component('table-row',{
             this.$emit("delNote",this.note)
         },
         checkNote: function(){
-            console.log(this.flag)
             this.note.checked = !this.flag
-            console.log(this.note)
             this.$http.put('/notes/'+this.note.id, this.note, {headers:{'X-CSRF-TOKEN': csrf_token}});
         }
     }

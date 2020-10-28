@@ -1,11 +1,15 @@
 package com.victory.notes.entity;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.Set;
 
 @Entity
 @Table(name = "s2i_user")
-public class User {
+public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -61,4 +65,28 @@ public class User {
     public void setRole(Set<Role> role) {
         this.role = role;
     }
+
+
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    public boolean isEnabled() {
+        return isActive();
+    }
+
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return getRole();
+    }
+
+
+
 }

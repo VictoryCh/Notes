@@ -1,9 +1,6 @@
 package com.victory.notes.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class Note {
@@ -15,12 +12,19 @@ public class Note {
     private String text;
     private boolean checked;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id")
+    private User author;
+
+
+
     public Note() {
     }
 
-    public Note(String text, boolean checked) {
+    public Note(String text, boolean checked, User user) {
         this.text = text;
         this.checked = checked;
+        this.author = user;
     }
 
     public Long getId() {
@@ -37,6 +41,18 @@ public class Note {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public User getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(User author) {
+        this.author = author;
+    }
+
+    public String getAuthorName(User author){
+        return author != null ? author.getUsername() : "<none>";
     }
 
     public boolean isChecked() {
